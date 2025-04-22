@@ -1,0 +1,5228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Visite interactive 360° de la boutique">
+    <title>Visite Interactive 360° - Boutique</title>
+    <!-- Pannellum pour la visite 360° -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pannellum/2.5.6/pannellum.js"></script>
+    <!-- Font Awesome pour de meilleures icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <!-- Ajout de la police Syne -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap">
+    <style>
+        /* Styles de base */
+        :root {
+            --primary-color: #222;
+            --text-color: #fff;
+            --accent-color: #ff0000;
+            --overlay-bg: rgba(0, 0, 0, 0.7);
+            --tooltip-bg: rgba(0, 0, 0, 0.8);
+            --transition-speed: 0.3s;
+        }
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Syne', sans-serif; /* Changé pour Syne */
+            background-color: var(--primary-color);
+            color: var(--text-color);
+        }
+        
+        #panorama {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+        }
+    
+    /* Styles de la page d'accueil */
+body {
+  background-color: var(--primary-color);
+  background-image: url('pano/Démarrez.jpg');
+  background-size: 130% auto;
+  background-position: 75% 65%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: white;
+  font-family: 'Syne', sans-serif;
+  text-align: center;
+  margin: 0;
+  position: relative;
+  /* transform: rotate(-0.65deg); */ /* Supprimer ou commenter cette ligne */
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: -1;
+  /* transform: rotate(0.2deg); */ /* Supprimer ou commenter cette ligne */
+}
+    
+    .content-container {
+      width: 90%;
+      max-width: 800px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    
+    .logo {
+      max-width: 220px;
+      width: 50%;
+      margin-bottom: 30px;
+      filter: invert(1);
+      position: relative;
+      top: -30px;
+    }
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    
+    h1 {
+      font-size: 24px;
+      line-height: 1.4;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+    
+    p {
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+    
+    .start-btn {
+      background-color: #e9c861;
+      color: #333;
+      border: none;
+      padding: 12px 30px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+    
+    .start-btn:hover {
+      background-color: #d4b652;
+    }
+    
+    .guide {
+      background-color: rgba(0, 0, 0, 0.7);
+      max-width: 450px;
+      margin: 30px auto;
+      padding: 20px;
+      text-align: left;
+      border-radius: 5px;
+    }
+    
+    .guide h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    ul {
+      text-align: left;
+      padding-left: 25px;
+      font-size: 14px;
+    }
+    
+    li {
+      margin-bottom: 8px;
+    } 
+    /* Styles pour la visite 360° */
+  #panorama {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+  }
+  
+  .panorama-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none; /* Caché par défaut */
+  }
+  
+  /* Masquer le "by" */
+  .pnlm-author-box {
+    display: none !important;
+  }
+  
+  /* Titre des scènes */
+  .pnlm-title-box {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    max-width: 300px !important;
+    text-align: right !important;
+    background-color: var(--overlay-bg) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    transform: none !important;
+    margin: 0 !important;
+    z-index: 100 !important;
+    transition: opacity 0.3s ease-in-out !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+    border-left: 3px solid var(--accent-color) !important;
+    font-family: 'Syne', sans-serif !important;
+    font-weight: 700 !important;
+  }    
+  /* Styles des hotspots */
+  .custom-hotspot {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: none;
+    background-color: transparent;
+    transition: transform var(--transition-speed) ease-in-out;
+  }
+  
+  .custom-hotspot:hover {
+    transform: scale(1.1);
+  }
+  
+  .hotspot-fleche {
+    width: 50px !important;
+    height: 50px !important;
+    background-image: url('icônes/fleche.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    border: none !important;
+    background-color: transparent !important;
+    filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.9));
+  }
+  
+  .hotspot-livre {
+    width: 80px !important;
+    height: 80px !important;
+    background-image: url('icônes/livre.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    border: none !important;
+    background-color: transparent !important;
+    filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.9));
+  }
+  
+  .hotspot-play {
+    width: 60px !important;
+    height: 60px !important;
+    background-image: url('icônes/play.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    border: none !important;
+    background-color: transparent !important;
+    filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.9));
+  }
+  
+  .hotspot-photo {
+    width: 40px !important;
+    height: 40px !important;
+    background-image: url('icônes/photo.png') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    border: none !important;
+    background-color: transparent !important;
+    filter: drop-shadow(0px 0px 4px rgba(0, 0, 0, 0.9));
+  }
+  
+  .hotspot-text {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 14px;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px black;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-align: center;
+    width: auto;
+    pointer-events: none;
+    background-color: transparent;
+    font-family: 'Syne', sans-serif;
+    font-weight: 400;
+  }
+  
+  .hotspot-label {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+    text-shadow: 1px 1px 2px black;
+  }
+  
+  /* Style du tooltip */
+  .tooltip {
+    width: 80px;
+    margin-top: 45px;
+    padding: 5px;
+    background-color: transparent;
+    color: white;
+    text-align: center;
+    border-radius: 3px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px black;
+  }   
+  /* Styles des modales */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: opacity var(--transition-speed) ease-in-out;
+  }
+  
+  .modal.active {
+    opacity: 1;
+  }
+  
+  .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 500px;
+    max-width: 90%;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 0;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: all var(--transition-speed) ease-in-out;
+    overflow: hidden;
+  }
+  
+  .modal.active .modal-content {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  
+  .modal-content img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    margin: 0;
+  }
+  
+  .video-modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 80vw;
+  max-width: 1200px;
+  max-height: 80vh;
+  background-color: transparent;
+  opacity: 0;
+  transition: all var(--transition-speed) ease-in-out;
+}
+
+.modal.active .video-modal-content {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+  
+  .video-modal-content video {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+  
+  .close-modal {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    color: white;
+    font-size: 40px;
+    font-weight: normal;
+    cursor: pointer;
+    z-index: 1001;
+    transition: transform var(--transition-speed) ease-in-out;
+  }
+  
+  .close-modal:hover {
+    transform: rotate(90deg);
+    color: var(--accent-color);
+  }
+  
+  .video-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1002;
+    background-color: rgba(0, 0, 0, 0.6);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease-in-out;
+  }
+  
+  .video-close:hover {
+    background-color: var(--accent-color);
+    transform: rotate(90deg);
+  }
+  
+  .texte-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    color: black;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 1002;
+    background-color: rgba(0, 0, 0, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed) ease-in-out;
+  }
+  
+  .texte-close:hover {
+    background-color: var(--accent-color);
+    transform: rotate(90deg);
+    color: white;
+  }   
+  /* UI Controls */
+  .controls-container {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    z-index: 100;
+    padding: 0 20px;
+  }
+  
+  .control-button {
+    background-color: var(--overlay-bg);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition-speed) ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .control-button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-5px);
+  }
+  
+  .control-button i {
+    font-size: 20px;
+  } 
+  
+  /* Bouton VR */
+  #vrButton {
+    background-color: var(--overlay-bg);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--transition-speed) ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+  }
+  
+  #vrButton:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-5px);
+  }
+  
+  /* Bouton de retour à l'accueil */
+  #homeButton {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Syne', sans-serif;
+    display: none; /* Caché par défaut */
+  }  
+  /* Info Panel */
+  #infoPanel {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100%;
+    background-color: var(--primary-color);
+    z-index: 999;
+    overflow-y: auto;
+    transition: right var(--transition-speed) ease-in-out;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: 'Syne', sans-serif;
+  }
+  
+  #infoPanel.active {
+    right: 0;
+  }
+  
+  .info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .info-header h2 {
+    margin: 0;
+    font-size: 22px;
+    color: var(--accent-color);
+    font-weight: 700;
+  }
+  
+  .close-info {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform var(--transition-speed) ease;
+  }
+  
+  .close-info:hover {
+    transform: rotate(90deg);
+    color: var(--accent-color);
+  }
+  
+  .scene-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .scene-item {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+  }
+  
+  .scene-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+  }
+  
+  .scene-item.active {
+    background-color: #ff0000; /* Fond rouge pour la scène active */
+    color: white; /* Texte en blanc pour meilleure lisibilité sur fond rouge */
+  }
+
+  .scene-item.active .scene-item-desc {
+    opacity: 1; /* Rendre la description plus lisible quand active */
+  }
+  
+  .scene-item-title {
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+  
+  .scene-item-desc {
+    font-size: 14px;
+    opacity: 0.7;
+    font-weight: 400;
+  } 
+  /* Mode visite 360° */
+  .mode-360 {
+    overflow: hidden;
+    background-color: #000;
+  }
+  
+  .mode-360 .content-container,
+  .mode-360 .logo,
+  .mode-360 body::before {
+    display: none;
+  }
+  
+  .mode-360 .panorama-container,
+  .mode-360 #vrButton,
+  .mode-360 #homeButton {
+    display: block;
+  }
+  
+  .mode-360 body {
+    background-image: none;
+    transform: none;
+    display: block;
+  }
+  
+  /* Loading indicator */
+  #loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+  }
+  
+  /* Media queries pour les appareils mobiles */
+  @media (max-width: 768px) {
+  body {
+    background-position: 60% center;
+    /* transform: rotate(0deg); */ /* Supprimer ou commenter cette ligne */
+    background-size: cover;
+  }
+  
+  
+    
+    .logo {
+      width: 40%;
+      max-width: 150px;
+      top: -15px;
+      display: block;
+    }
+    
+    h1 {
+      font-size: 20px;
+    }
+    
+    p {
+      font-size: 14px;
+    }
+    
+    .start-btn {
+      padding: 10px 25px;
+      font-size: 16px;
+    }
+    
+    .guide {
+      padding: 15px;
+      margin: 20px auto;
+    }
+    
+    .guide h2 {
+      font-size: 18px;
+    }
+    
+    ul {
+      padding-left: 20px;
+      font-size: 13px;
+    }
+    
+    .controls-container {
+      bottom: 10px;
+    }
+    
+    .control-button {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .control-button i {
+      font-size: 16px;
+    }
+    
+    #vrButton {
+      font-size: 14px;
+      padding: 8px 15px;
+    }
+    
+    .custom-hotspot {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .hotspot-fleche {
+      width: 40px !important;
+      height: 40px !important;
+    }
+    
+    .hotspot-text {
+      font-size: 12px;
+      bottom: -20px;
+    }
+    
+    #infoPanel {
+      width: 280px;
+      right: -280px;
+    }
+    
+    .pnlm-title-box {
+      max-width: 200px !important;
+      font-size: 14px !important;
+      padding: 5px 10px !important;
+    }
+  }
+  
+  /* Media queries pour les très petits écrans */
+  @media (max-width: 380px) {
+    .content-container {
+      width: 95%;
+      padding: 10px;
+    }
+    
+    h1 {
+      font-size: 18px;
+    }
+    
+    .logo {
+      width: 35%;
+      top: -10px;
+    }
+    
+    .guide {
+      padding: 12px;
+    }
+  }
+</style>
+<style>
+  .info-panel {
+    display: none; /* Tous les panneaux sont cachés par défaut */
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 350px;
+    height: 100%;
+    background-color: var(--primary-color);
+    z-index: 999;
+    overflow-y: auto;
+    transition: transform var(--transition-speed) ease-in-out, opacity var(--transition-speed) ease-in-out;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    box-sizing: border-box;
+    font-family: 'Syne', sans-serif;
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.info-panel.active {
+    display: block;
+    transform: translateX(0);
+    opacity: 1;
+}
+/* Styles distinctifs pour chaque panneau */
+#infoPanelSouplex {
+    border-left: 4px solid #ff0000;
+}
+
+#infoPanelAppart {
+    border-left: 4px solid #ff0000;
+}
+
+#infoPanelEntree {
+    border-left: 4px solid #ff0000;
+}
+  
+  /* Ajout d'une bordure colorée pour différencier les panneaux */
+  #infoPanel {
+    border-left: 4px solid #ff0000;
+  }
+  
+  #infoPanelAppart {
+    border-left: 4px solid #ff0000;
+  }
+  
+  #infoPanelEntree {
+    border-left: 4px solid #ff0000;
+  }
+</style>
+</head>
+
+<body>
+  <!-- Page d'accueil -->
+  <img src="icônes/logo.png" alt="Logo Renoma" class="logo">
+  
+  <div class="content-container">
+    <h1>Bienvenue dans la visite virtuelle de l'exposition<br>"Corps Pop Esprit Dada" de Maurice Renoma</h1>
+    
+    <p>Une plongée à 360° dans son univers artistique au sein de la maison Renoma</p>
+    
+    <button class="start-btn" id="startButton">Commencer la visite</button>
+    
+    <div class="guide">
+      <h2>Comment naviguer :</h2>
+      <ul>
+        <li>Utilisez votre souris pour regarder autour de vous</li>
+        <li>Cliquez sur les flèches pour vous déplacer</li>
+        <li>Cliquez sur les points rouges pour voir les œuvres, vidéos et textes</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Conteneur panorama 360 (caché par défaut) -->
+  <div class="panorama-container">
+    <div id="panorama"></div>
+    
+    <!-- Contrôles de navigation -->
+    <div class="controls-container">
+      <button class="control-button" id="prevButton" aria-label="Scène précédente">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+      
+      <button id="vrButton">
+        <i class="fas fa-vr-cardboard"></i> Mode VR
+      </button>
+      
+      <button class="control-button" id="infoButton" aria-label="Informations">
+        <i class="fas fa-info-circle"></i>
+      </button>
+      
+      <button class="control-button" id="nextButton" aria-label="Scène suivante">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+    
+    <button id="homeButton">Retour à l'accueil</button>
+  </div>
+  <!-- Panneaux d'information pour différentes sections -->
+<div id="infoPanelContainer">
+  <!-- Panel d'informations - SOUPLEX -->
+  <div id="infoPanelSouplex" class="info-panel">
+      <div class="info-header">
+          <h2>Corps Pop Esprit Dada</h2>
+          <button class="close-info" aria-label="Fermer le panneau d'informations">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      
+      <p>Utilisez les flèches directionnelles ou cliquez sur les points d'intérêt pour naviguer dans l'exposition.</p>
+      
+      <h3>Parcours de visite du Souplex</h3>
+      <ul class="scene-list">
+          <li class="scene-item" onclick="loadScene('fontaines')">
+              <div class="scene-item-title">Fontaines Virtuelles</div>
+              <div class="scene-item-desc">Installation audiovisuelle en hommage à la "Fontaine" de Marcel Duchamp.</div>
+          </li>
+          <li class="scene-item" onclick="loadScene('deja-jadis')">
+              <div class="scene-item-title">Déjà Jadis</div>
+              <div class="scene-item-desc">Œuvre conceptuelle explorant la temporalité et la mémoire.</div>
+          </li>
+          <li class="scene-item" onclick="loadScene('cabaret-voltaire')">
+              <div class="scene-item-title">Cabaret Voltaire & Cabinet de Curiosité</div>
+              <div class="scene-item-desc">Reconstitution d'un espace dadaïste avec objets et œuvres historiques.</div>
+          </li>
+          <li class="scene-item" onclick="loadScene('salon-musique')">
+              <div class="scene-item-title">Salon de Musique</div>
+              <div class="scene-item-desc">Espace sonore présentant des compositions dadaïstes et expérimentales.</div>
+          </li>
+          <li class="scene-item" onclick="loadScene('gramophone')">
+              <div class="scene-item-title">Gramophone, my love parade</div>
+              <div class="scene-item-desc">Installation sonore avec un gramophone d'époque jouant "My love parade" de Maurice Chevalier.</div>
+          </li>
+      </ul>
+  </div>
+
+  <!-- Panel d'informations - L'APPART -->
+  <div id="infoPanelAppart" class="info-panel">
+      <div class="info-header">
+          <h2>Corps Pop Esprit Dada</h2>
+          <button class="close-info" aria-label="Fermer le panneau d'informations">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      
+      <p>Utilisez les flèches directionnelles ou cliquez sur les points d'intérêt pour naviguer dans les différentes pièces.</p>
+      
+      <h3>Parcours de visite de L'Appart Renoma</h3>
+      <ul class="scene-list">
+          <li class="scene-item" onclick="loadScene('atelier')">
+              <div class="scene-item-title">L'Atelier</div>
+              <div class="scene-item-desc">Immersion au sein de l'antre de la création, là où l'outsider et le génie se retrouvent.</div>
+          </li>
+          <li class="scene-item" onclick="loadScene('salle-pop-png')">
+            <div class="scene-item-title">Pop et superhéros</div>
+            <div class="scene-item-desc">Artiste invité dans le Corps POP de l'exposition avec ses superhéros de petite taille, Mauro Corda partage avec Maurice Renoma ce besoin pulsionnel de jouer avec les conventions, de défier la normalité et de détourner les références de la culture populaire mondiale.</div>
+        </li>
+        <li class="scene-item" onclick="loadScene('warhol-1')">
+            <div class="scene-item-title">Salle Warhol</div>
+            <div class="scene-item-desc">C'est ici que se tisse le dialogue artistique entre Maurice Renoma et Andy Warhol, autour de principes comme la popularisation de l'art et de la mode et l'utilisation d'une icône unique reconnaissable : le poisson rouge pour Maurice et la banane pour Andy.</div>
+        </li>
+        <li class="scene-item" onclick="loadScene('salle-cristobal')">
+            <div class="scene-item-title">Cristobal, icône pop</div>
+            <div class="scene-item-desc">Maurice Renoma a créé sa propre icône pop : Cristobal le poisson rouge en plastique, qui utilise le pouvoir de l'image pour incarner la critique du matérialisme et du consumérisme de nos sociétés modernes.</div>
+        </li>
+        <li class="scene-item" onclick="loadScene('popup-momo')">
+            <div class="scene-item-title">The Momo Pop Up Store</div>
+            <div class="scene-item-desc">Véritable signature, le Momo est un dessin créé par Maurice en 1980, inspiré du graffiti et par essence du Pop Art : avec lui les objets de consommation courante s'élèvent au statut d'œuvres d'art.</div>
+        </li>
+      </ul>
+  </div>
+
+  <!-- Panel d'informations - L'ENTRÉE -->
+  <div id="infoPanelEntree" class="info-panel">
+      <div class="info-header">
+          <h2>Corps Pop Esprit Dada</h2>
+          <button class="close-info" aria-label="Fermer le panneau d'informations">
+              <i class="fas fa-times"></i>
+          </button>
+      </div>
+      
+      <p>Bienvenue dans la visite virtuelle de l'exposition "Corps Pop Esprit Dada" de Maurice Renoma.</p>
+      
+      <h3>Parcours de visite de l'entrée</h3>
+      <ul class="scene-list">
+          <li class="scene-item" onclick="loadScene('entree')">
+              <div class="scene-item-title">Entrée Boutique</div>
+              <div class="scene-item-desc">L'entrée de l'exposition se fait par la mythique boutique Renoma, trait d'union entre le Souplex pour la partie "Esprit DADA", et l'Appart pour la partie Corps POP.</div>
+          </li>
+          <!-- Autres scènes de l'entrée -->
+      </ul>
+  </div>
+</div>
+<!-- Modales pour contenu supplémentaire -->
+<div id="texteModal" class="modal">
+  <div class="modal-content">
+    <img id="texteImage" src="" alt="Texte explicatif">
+    <!-- Le bouton de fermeture sera ajouté dynamiquement -->
+  </div>
+</div>
+
+<div id="videoModal" class="modal">
+  <div class="video-modal-content">
+    <!-- Le contenu complet sera injecté dynamiquement -->
+  </div>
+</div>
+</div>
+<script>
+  // Fonction pour encoder les URL avec caractères spéciaux
+  function encodePath(path) {
+    // Séparons le chemin en segments
+    const parts = path.split('/');
+    // Encodons chaque segment
+    const encodedParts = parts.map(part => encodeURIComponent(part));
+    // Reconstruisons le chemin
+    return encodedParts.join('/');
+  }
+
+  // Définition des chemins d'images avec caractères spéciaux
+  const image1 = encodePath("pano/entrée boutique 2.jpg");
+  const image2 = encodePath("pano/entrée boutique 3.jpg");
+  const image3 = encodePath("pano/boutique étage.jpg");
+  const image4 = encodePath("pano/escalier menant au Souplex.jpg");
+  const entre_boutique = encodePath("pano/entre_boutique.jpg");
+  const flecheIcon = encodePath("icônes/fleche.png");
+  
+  // Configuration des scènes
+  const scenes = {
+    entree: {
+      title: "Entrée Boutique Renoma",
+      description: "Hall d'entrée de la Maison Renoma",
+      northOffset: 0,
+      yaw: -7,
+      pitch: 2,
+      hfov: 110,
+      panorama: 'pano/entre_boutique.jpg',
+      hotSpots: [
+        {
+          pitch: -2,
+          yaw: 3,
+          type: 'custom',
+          cssClass: 'hotspot-fleche',
+          id: 'hotspot-vers-entree2',
+          tooltip: 'Avancez',
+          clickHandlerFunc: function() {
+            loadScene('entree2');
+          },
+          createTooltipFunc: function(hotSpotDiv) {
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('hotspot-text');
+            textDiv.textContent = 'Avancez';
+            hotSpotDiv.appendChild(textDiv);
+          }
+        }
+      ],
+      nextScene: 'entree2',
+      prevScene: null
+    },
+    entree2: {
+  title: "Entrée Boutique Renoma",
+  description: "Hall d'entrée - Vue 2",
+  northOffset: 30,
+  yaw: 30,
+  pitch: 0,
+  hfov: 110,
+  panorama: 'pano/entrée boutique 2.jpg',
+  hotSpots: [
+    {
+      pitch: -5,
+      yaw: -10,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree3',
+      tooltip: 'Avancez',
+      clickHandlerFunc: function() {
+        loadScene('entree3');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 55,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-etage',
+      tooltip: 'Avancez',
+      clickHandlerFunc: function() {
+        loadScene('etage');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -5,
+      yaw: -150,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree',
+      tooltip: 'Retour',
+      clickHandlerFunc: function() {
+        loadScene('entree');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'entree3',
+  prevScene: 'entree'
+},
+
+entree3: {
+  title: "Entrée Boutique Renoma",
+  description: "Hall d'entrée - Vue 3",
+  northOffset: 110,
+  yaw: 110,
+  pitch: 6,
+  hfov: 110,
+  panorama: 'pano/entrée boutique 3.jpg',
+  hotSpots: [
+    {
+      pitch: -8,
+      yaw: 110,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-escalier',
+      tooltip: 'Vers l\'escalier',
+      clickHandlerFunc: function() {
+        loadScene('escalier');
+        showInfoPanel('souplex'); // Assure que le panneau s'affiche même si loadScene ne le fait pas
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Se rendre au Souplex';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 85,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree2-retour',
+      tooltip: 'Retour',
+      clickHandlerFunc: function() {
+        loadScene('entree2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'escalier',
+  prevScene: 'entree2'
+},
+
+etage: {
+  title: "Boutique Étage",
+  description: "Étage de la boutique Renoma",
+  northOffset: 0,
+  yaw: 30,
+  pitch: 0,
+  hfov: 110,
+  panorama: 'pano/boutique étage.jpg',
+  hotSpots: [
+    // Hotspot existant pour retourner à l'entrée
+    {
+      pitch: -10,
+      yaw: 140,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree2-retour',
+      tooltip: 'Retour',
+      clickHandlerFunc: function() {
+        loadScene('entree2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    // Nouveau hotspot pour accéder à "L'Appart"
+    {
+      pitch: -5,
+      yaw: 45,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-appart',
+      tooltip: 'Vers L\'Appart',
+      clickHandlerFunc: function() {
+        loadScene('appart');
+        showInfoPanel('appart'); // Assure que le panneau s'affiche même si loadScene ne le fait pas
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Vers L\'Appart';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'appart', // Mise à jour pour définir "appart" comme scène suivante
+  prevScene: 'entree2'
+},
+escalier: {
+  title: "Escalier menant au Souplex",
+  description: "Début de l'exposition par cet escalier menant vers les salles d'exposition.",
+  northOffset: 25,
+  yaw: 25,
+  pitch: -30,
+  hfov: 100,
+  panorama: 'pano/escalier menant au Souplex.jpg',
+  hotSpots: [
+    {
+      pitch: -35,
+      yaw: 25,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-fontaines',
+      tooltip: 'Vers les Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        loadScene('fontaines');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 6,
+      yaw: 74,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-dada',
+      tooltip: 'Esprit DADA',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Esprit DADA.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Esprit DADA';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 25,
+      yaw: -57,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree3-retour',
+      tooltip: 'Retour vers l\'entrée',
+      clickHandlerFunc: function() {
+        loadScene('entree3');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour vers l\'entrée';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'fontaines',
+  prevScene: null
+},
+
+fontaines: {
+  title: "Fontaines Virtuelles",
+  description: "Installation audiovisuelle représentant des fontaines numériques.",
+  northOffset: -128,
+  yaw: 232,
+  pitch: -10,
+  hfov: 100,
+  panorama: 'pano/Fontaines Virtuelles.png',
+  hotSpots: [
+    {
+      pitch: -16,
+      yaw: 33,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette1',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077682904?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -14,
+      yaw: 68,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette2',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077683824?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -18,
+      yaw: 113,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette3',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077684720?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -24,
+      yaw: 68,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette4',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077688398?h=5aa99d497f&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -26,
+      yaw: 90,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette5',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077691620?h=3ac72788cd&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1,
+      yaw: 165,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-fontaines',
+      tooltip: 'Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Fontaines Virtuelles.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Fontaines Virtuelles';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 215,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-deja-jadis',
+      tooltip: 'Vers Déjà Jadis',
+      clickHandlerFunc: function() {
+        loadScene('deja-jadis');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 7,
+      yaw: -80,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-escalier-retour',
+      tooltip: 'Retour vers l\'Escalier',
+      clickHandlerFunc: function() {
+        loadScene('escalier-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'deja-jadis',
+  prevScene: 'escalier'
+},
+'deja-jadis': {
+  title: "Déjà Jadis",
+  description: "Œuvre conceptuelle explorant la temporalité et la mémoire.",
+  northOffset: 180,
+  yaw: 180,
+  pitch: 0,
+  hfov: 120,
+  panorama: 'pano/déjà jadis.jpg',
+  hotSpots: [
+  {
+            pitch: -28,
+            yaw: 318,
+            type: 'custom',
+            cssClass: 'hotspot-livre',
+            id: 'hotspot-livre-deja-jadis',
+            tooltip: 'Déjà Jadis',
+            clickHandlerFunc: function() {
+              afficherTexte('Texte/Texte Déjà Jadis.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'Déjà Jadis';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -5,
+            yaw: 73,
+            type: 'custom',
+            cssClass: 'hotspot-play',
+            id: 'hotspot-video-deja-jadis',
+            tooltip: 'Vidéo: Déjà Jadis',
+            clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077475590?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'Regarder la vidéo';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 17,
+            yaw: 300,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-oeuvres',
+            tooltip: 'Photos des oeuvres',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 15,
+            yaw: 200,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge2',
+            tooltip: 'Horloge 2',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 10,
+            yaw: 216,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge3',
+            tooltip: 'Horloge 3',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 26,
+            yaw: 230,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge4',
+            tooltip: 'Horloge 4',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge4.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 10,
+            yaw: 242,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge5',
+            tooltip: 'Horloge 5',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge5.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+    {
+      pitch: 21,
+      yaw: 268,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-horloge6',
+      tooltip: 'Horloge 6',
+      clickHandlerFunc: function() {
+        afficherTexte('images/horloge6.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 5,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-fontaines-retour',
+      tooltip: 'Retour vers Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        loadScene('fontaines-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 165,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-cabaret',
+      tooltip: 'Vers Cabaret Voltaire & Cabinet de Curiosité',
+      clickHandlerFunc: function() {
+        loadScene('cabaret-voltaire');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'cabaret-voltaire',
+  prevScene: 'fontaines'
+},
+'cabaret-voltaire': {
+  title: "Cabaret Voltaire & Cabinet de Curiosité",
+  description: "Reconstitution d'un espace dadaïste avec objets et œuvres historiques.",
+  northOffset: 0,
+  yaw: 57,
+  pitch: 0,
+  hfov: 100,
+  panorama: 'pano/Cabaret Voltaire & Cabinet de Curiosité.png',
+  hotSpots: [
+    {
+      pitch: -5,
+      yaw: 50,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salon-musique',
+      tooltip: 'Vers le Salon de Musique',
+      clickHandlerFunc: function() {
+        loadScene('salon-musique');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 18.5,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-cabaret-voltaire',
+      tooltip: 'Texte Cabaret Voltaire',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Cabaret Voltaire & Cabinet de Curiosité.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cabaret Voltaire';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -2,
+      yaw: 107,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-spf',
+      tooltip: 'Vidéo SPF',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077482174?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 4,
+      yaw: 172,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-cabinet-curiosite',
+      tooltip: 'Cabinet de Curiosité',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Cabinet de Curiosité.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cabinet de Curiosité';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -5,
+      yaw: 275,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-deja-jadis-retour',
+      tooltip: 'Vers Déjà Jadis',
+      clickHandlerFunc: function() {
+        loadScene('deja-jadis-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'salon-musique',
+  prevScene: 'deja-jadis'
+},
+
+'salon-musique': {
+  title: "Salon de Musique",
+  description: "Espace sonore présentant des compositions dadaïstes et expérimentales.",
+  northOffset: 0,
+  yaw: 28,
+  pitch: -13,
+  hfov: 100,
+  panorama: 'pano/Salon de Musique.png',
+  hotSpots: [
+    {
+      pitch: -5,
+      yaw: 50,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-gramophone',
+      tooltip: 'Vers Gramophone, Madame Butterfly',
+      clickHandlerFunc: function() {
+        loadScene('gramophone');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: -2,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-mur-collage',
+      tooltip: 'Mur de collage',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte mur de collage.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Mur de collage';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 13,
+      yaw: -145,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-salon-musique',
+      tooltip: 'Salon de Musique',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Salon de Musique.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Salon de Musique';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },   
+    {
+      pitch: -3,
+      yaw: 60,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-im2',
+      tooltip: 'Image 2',
+      clickHandlerFunc: function() {
+        afficherTexte('images/im2.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 83,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-im1',
+      tooltip: 'Image 1',
+      clickHandlerFunc: function() {
+        afficherTexte('images/im1.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -5,
+      yaw: 260,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-cabaret-2',
+      tooltip: 'Vers Cabaret Voltaire & Cabinet de Curiosité 2',
+      clickHandlerFunc: function() {
+        loadScene('cabaret-voltaire-2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'gramophone',
+  prevScene: 'cabaret-voltaire'
+},
+'gramophone': {
+  title: "Gramophone, my love parade",
+  description: "Installation sonore avec un gramophone d'époque jouant \"My love parade\" de Maurice Chevalier.",
+  northOffset: 0,
+  yaw: 260,
+  pitch: 5,
+  hfov: 100,
+  panorama: 'pano/Gramophone, Madame Butterfly.png',
+  hotSpots: [
+    {
+      pitch: -4,
+      yaw: 247,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salon-musique-2',
+      tooltip: 'Vers Salon de Musique 2',
+      clickHandlerFunc: function() {
+        loadScene('salon-musique-2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'salon-musique-2',
+  prevScene: 'salon-musique'
+},
+
+'salon-musique-2': {
+  title: "Salon de Musique 2",
+  description: "Suite de l'exploration musicale avec des instruments expérimentaux.",
+  northOffset: 0,
+  yaw: 130,
+  pitch: 0,
+  hfov: 100,
+  panorama: 'pano/Salon de Musique 2.png',
+  hotSpots: [
+    {
+      pitch: -5,
+      yaw: 100,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-cabaret-2',
+      tooltip: 'Vers Cabaret Voltaire & Cabinet de Curiosité 2',
+      clickHandlerFunc: function() {
+        loadScene('cabaret-voltaire-2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+            pitch: -2.5,
+            yaw: 182,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im3',
+            tooltip: 'Image 3',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 4,
+            yaw: 190,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im4',
+            tooltip: 'Image 4',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im4.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -2,
+            yaw: 197,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im5',
+            tooltip: 'Image 5',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im5.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 7,
+            yaw: 207,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im6',
+            tooltip: 'Image 6',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im6.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -31,
+            yaw: 167,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim1',
+            tooltip: 'Image Basim 1',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -34.5,
+            yaw: 175,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim2',
+            tooltip: 'Image Basim 2',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -41,
+            yaw: 185,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim3',
+            tooltip: 'Image Basim 3',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -45,
+            yaw: 202,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim4',
+            tooltip: 'Image Basim 4',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim4.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -26,
+            yaw: 157,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim5',
+            tooltip: 'Image Basim 5',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim5.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -22,
+            yaw: 151,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-basim6',
+            tooltip: 'Image Basim 6',
+            clickHandlerFunc: function() {
+              afficherTexte('images/basim6.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 6.5,
+            yaw: 164.5,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im7',
+            tooltip: 'Image 7',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im7.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 2,
+            yaw: 159.5,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im8',
+            tooltip: 'Image 8',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im8.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -1,
+            yaw: 155,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im9',
+            tooltip: 'Image 9',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im9.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 5,
+            yaw: 152,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im10',
+            tooltip: 'Image 10',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im10.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -0.5,
+            yaw: 149.5,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-im11',
+            tooltip: 'Image 11',
+            clickHandlerFunc: function() {
+              afficherTexte('images/im11.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          }
+  ],
+  nextScene: 'cabaret-voltaire-2',
+  prevScene: 'gramophone'
+},
+'cabaret-voltaire-2': {
+  title: "Cabaret Voltaire & Cabinet de Curiosité 2",
+  description: "Seconde partie du Cabaret Voltaire présentant d'autres œuvres dadaïstes.",
+  northOffset: 0,
+  yaw: 30,
+  pitch: 0,
+  hfov: 100,
+  panorama: 'pano/Cabaret Voltaire & Cabinet de Curiosité 2.jpg',
+  hotSpots: [
+    {
+      pitch: -5,
+      yaw: 42,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-deja-jadis-retour',
+      tooltip: 'Vers Déjà Jadis',
+      clickHandlerFunc: function() {
+        loadScene('deja-jadis-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1.5,
+      yaw: 117,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-cabaret-voltaire',
+      tooltip: 'Texte Cabaret Voltaire',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Cabaret Voltaire & Cabinet de Curiosité.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cabaret Voltaire';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -2,
+      yaw: 300,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-spf',
+      tooltip: 'Vidéo SPF',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077482174?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 3,
+      yaw: 345.5,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-cabinet-curiosite',
+      tooltip: 'Cabinet de Curiosité',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Cabinet de Curiosité.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cabinet de Curiosité';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -5,
+      yaw: 170,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salon-musique',
+      tooltip: 'Vers le Salon de Musique',
+      clickHandlerFunc: function() {
+        loadScene('salon-musique');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'deja-jadis-retour',
+  prevScene: 'salon-musique-2'
+},
+
+'deja-jadis-retour': {
+  title: "Déjà Jadis (Retour)",
+  description: "Perspective inverse de l'œuvre Déjà Jadis, offrant un regard différent.",
+  northOffset: 0,
+  yaw: 0,
+  pitch: 0,
+  hfov: 120,
+  panorama: 'pano/déjà jadis.jpg',
+  hotSpots: [
+  {
+            pitch: -28,
+            yaw: 318,
+            type: 'custom',
+            cssClass: 'hotspot-livre',
+            id: 'hotspot-livre-deja-jadis',
+            tooltip: 'Déjà Jadis',
+            clickHandlerFunc: function() {
+              afficherTexte('Texte/Texte Déjà Jadis.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'Déjà Jadis';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: -5,
+            yaw: 73,
+            type: 'custom',
+            cssClass: 'hotspot-play',
+            id: 'hotspot-video-deja-jadis',
+            tooltip: 'Vidéo: Déjà Jadis',
+            clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077475590?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'Regarder la vidéo';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 17,
+            yaw: 300,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-oeuvres',
+            tooltip: 'Photos des oeuvres',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 15,
+            yaw: 200,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge2',
+            tooltip: 'Horloge 2',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 10,
+            yaw: 216,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge3',
+            tooltip: 'Horloge 3',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 26,
+            yaw: 230,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge4',
+            tooltip: 'Horloge 4',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge4.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+          {
+            pitch: 10,
+            yaw: 242,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-horloge5',
+            tooltip: 'Horloge 5',
+            clickHandlerFunc: function() {
+              afficherTexte('images/horloge5.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+              const textDiv = document.createElement('div');
+              textDiv.classList.add('hotspot-text');
+              textDiv.textContent = 'cliquez';
+              hotSpotDiv.appendChild(textDiv);
+            }
+          },
+    {
+      pitch: 21,
+      yaw: 268,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-horloge6',
+      tooltip: 'Horloge 6',
+      clickHandlerFunc: function() {
+        afficherTexte('images/horloge6.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 10,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-fontaines-retour',
+      tooltip: 'Retour vers Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        loadScene('fontaines-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 165,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-cabaret',
+      tooltip: 'Vers Cabaret Voltaire & Cabinet de Curiosité',
+      clickHandlerFunc: function() {
+        loadScene('cabaret-voltaire');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'fontaines-retour',
+  prevScene: 'cabaret-voltaire-2'
+},
+
+'fontaines-retour': {
+  title: "Fontaines Virtuelles (Retour)",
+  description: "Vue retour des fontaines virtuelles, avec une perspective différente.",
+  northOffset: -40,
+  yaw: -40,
+  pitch: -10,
+  hfov: 120,
+  panorama: 'pano/Fontaines Virtuelles.png',
+  hotSpots: [
+  {
+      pitch: -16,
+      yaw: 33,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette1',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077682904?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -14,
+      yaw: 68,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette2',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077683824?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -18,
+      yaw: 113,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette3',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077684720?badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -24,
+      yaw: 68,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette4',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077688398?h=5aa99d497f&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -26,
+      yaw: 90,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-toilette5',
+      tooltip: 'Voir la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077691620?h=3ac72788cd&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1,
+      yaw: 165,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-fontaines',
+      tooltip: 'Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Fontaines Virtuelles.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Fontaines Virtuelles';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: 215,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-deja-jadis',
+      tooltip: 'Vers Déjà Jadis',
+      clickHandlerFunc: function() {
+        loadScene('deja-jadis');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 7,
+      yaw: -80,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-escalier-retour',
+      tooltip: 'Retour vers l\'Escalier',
+      clickHandlerFunc: function() {
+        loadScene('escalier-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 25,
+      yaw: -57,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-entree3-retour',
+      tooltip: 'Retour vers l\'entrée',
+      clickHandlerFunc: function() {
+        loadScene('entree3');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour vers l\'entrée';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'escalier-retour',
+  prevScene: 'deja-jadis-retour'
+},
+
+'escalier-retour': {
+  title: "Escalier menant au Souplex (Retour)",
+  description: "Retour vers l'entrée de l'exposition.",
+  northOffset: 25,
+  yaw: 295,
+  pitch: 30,
+  hfov: 100,
+  panorama: 'pano/escalier menant au Souplex.jpg',
+  hotSpots: [
+    {
+      pitch: -35,
+      yaw: 25,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-fontaines',
+      tooltip: 'Vers les Fontaines Virtuelles',
+      clickHandlerFunc: function() {
+        loadScene('fontaines');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 6,
+      yaw: 74,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-livre-dada',
+      tooltip: 'Esprit DADA',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Esprit DADA.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Esprit DADA';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'fontaines',
+  prevScene: 'fontaines-retour'
+},
+appart: {
+  title: "L'Appart",
+  description: "Espace salon aménagé pour présenter les produits en situation.",
+  northOffset: 0,
+  yaw: 0,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/L\'Appart.jpg',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 185,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-boutique-retour',
+      tooltip: 'Retour vers la Boutique',
+      clickHandlerFunc: function() {
+        loadScene('etage'); // Corriger pour utiliser 'etage' au lieu de 'boutique'
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 2,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir',
+      tooltip: 'Vers le Couloir',
+      clickHandlerFunc: function() {
+        loadScene('couloir');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 23,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-info-appart',
+      tooltip: 'Information',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte L\'Appart.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Présentation';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }   
+  ],
+  nextScene: 'couloir',
+  prevScene: 'etage' // Également corriger ici
+},
+couloir: {
+  title: "Couloir Intérieur",
+  description: "Couloir de liaison entre les différentes sections.",
+  northOffset: 0,
+  yaw: -50,
+  pitch: -5,
+  hfov: 160,
+  panorama: 'pano/couloir interieur.jpg',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 115,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-appart-retour',
+      tooltip: 'Retour vers L\'Appart',
+      clickHandlerFunc: function() {
+        loadScene('appart');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 270,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-gauche',
+      tooltip: 'Vers le Couloir Gauche',
+      clickHandlerFunc: function() {
+        loadScene('couloir-gauche');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 7,
+      yaw: 43,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-couloir1',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul1.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 5,
+      yaw: 280,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-couloir2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul2.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1,
+      yaw: 277,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-couloir3',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul3.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: -15,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-warhol',
+      tooltip: 'Vers Warhol',
+      clickHandlerFunc: function() {
+        loadScene('warhol-1');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 82,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-droite',
+      tooltip: 'Vers le Couloir Droite',
+      clickHandlerFunc: function() {
+        loadScene('couloir-droite');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 3,
+      yaw: 100,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-couloir-special',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/could2.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'couloir-gauche',
+  prevScene: 'appart'
+},
+'couloir-droite': {
+  title: "Couloir Droite",
+  description: "Section droite du couloir menant vers d'autres espaces.",
+  northOffset: 0,
+  yaw: 80,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/couloir droite.png',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 280,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-retour',
+      tooltip: 'Retour vers le Couloir Intérieur',
+      clickHandlerFunc: function() {
+        loadScene('couloir');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 90,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-atelier',
+      tooltip: 'Vers L\'Atelier',
+      clickHandlerFunc: function() {
+        loadScene('atelier');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 60,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-pop',
+      tooltip: 'Vers la Salle POP',
+      clickHandlerFunc: function() {
+        loadScene('salle-pop-png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -2,
+      yaw: -109,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-appart',
+      tooltip: 'Vers L\'Appart',
+      clickHandlerFunc: function() {
+        loadScene('appart');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 16,
+      yaw: 9,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-could',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/could.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'atelier',
+  prevScene: 'couloir'
+},
+'atelier': {
+  title: "L'Atelier",
+  description: "Espace de travail et de création.",
+  northOffset: 0,
+  yaw: 0,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/L\'atelier.jpg',
+  hotSpots: [
+    {
+      pitch: -8,
+      yaw: 190,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-droite-retour',
+      tooltip: 'Retour vers le Couloir Droite',
+      clickHandlerFunc: function() {
+        loadScene('couloir-droite-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+  pitch: 0,
+  yaw: -15,
+  type: 'custom',
+  cssClass: 'hotspot-fleche',
+  id: 'hotspot-vers-atelier2',
+  tooltip: 'Avancer dans l\'Atelier',
+  clickHandlerFunc: function() {
+    loadScene('atelier2');
+  },
+  createTooltipFunc: function(hotSpotDiv) {
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('hotspot-text');
+    textDiv.textContent = 'Avancez';
+    hotSpotDiv.appendChild(textDiv);
+  }
+},
+    {
+      pitch: 4,
+      yaw: 328,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-at1',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/at1.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -12,
+      yaw: 353,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-at2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/at2.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -25,
+      yaw: 95,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-at3',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/at3.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'salle-pop-png',
+  prevScene: 'couloir-droite'
+},
+'atelier2': {
+    title: "L'Atelier - Vue intérieure",
+    description: "Vue approfondie de l'espace de création.",
+    northOffset: 0,
+    yaw: 160,
+    pitch: 0,
+    hfov: 160,
+    panorama: 'pano/atelier2.jpg',
+    hotSpots: [
+        // Hotspot pour retourner à l'atelier
+        {
+            pitch: 0,
+            yaw: 116, // Position opposée pour retourner
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-couloir-droite-retour',
+            tooltip: 'Retour vers l\'Atelier',
+            clickHandlerFunc: function() {
+                loadScene('couloir-droite-retour');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: -5,
+            yaw: 205, // Position à ajuster selon l'orientation souhaitée
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-salle-pop-png',
+            tooltip: 'Vers la Salle POP',
+            clickHandlerFunc: function() {
+                loadScene('salle-pop-png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+    pitch: 14,
+    yaw: 254,
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-atelier2-at1',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/at1.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: -8,
+    yaw: 88,
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-atelier2-at3',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/at3.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: -1,
+    yaw: 129,
+    type: 'custom',
+    cssClass: 'hotspot-livre', // Utilise votre classe CSS existante
+    id: 'hotspot-livre-atelier',
+    tooltip: 'Information sur l\'Atelier',
+    clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte L\'Atelier.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Atelier';
+        hotSpotDiv.appendChild(textDiv);
+    }
+}
+    ],
+    nextScene: 'salle-pop-png', // Mise à jour pour refléter la nouvelle scène suivante
+    prevScene: 'atelier'
+},
+'couloir-droite-retour': {
+    title: "Couloir Droite",
+    description: "Section droite du couloir (vue retour).",
+    northOffset: 180, // Rotation à 180° pour inverser la vue
+    yaw: 260, // Inverse du yaw original (80+180)
+    pitch: 0,
+    hfov: 160,
+    panorama: 'pano/couloir droite.png', // Même panorama que l'original
+    hotSpots: [
+        // Hotspot vers le couloir intérieur (inversé)
+        {
+            pitch: 0,
+            yaw: -80, // Inverse de 280
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-couloir-retour-inverse',
+            tooltip: 'Vers le Couloir Intérieur',
+            clickHandlerFunc: function() {
+                loadScene('couloir');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: -2,
+            yaw: -109, // Position spécifiée yaw -60
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-appart',
+            tooltip: 'Vers L\'Appart',
+            clickHandlerFunc: function() {
+                loadScene('appart');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        // HOTSPOT VERS L'ATELIER
+        {
+            pitch: 0,
+            yaw: 90, // Position à ajuster selon l'orientation dans votre panorama
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-atelier',
+            tooltip: 'Vers L\'Atelier',
+            clickHandlerFunc: function() {
+                loadScene('atelier');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        // NOUVEAU HOTSPOT VERS SALLE POP
+        {
+            pitch: 0,
+            yaw: 60, // Position spécifiée yaw 70
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-salle-pop',
+            tooltip: 'Vers la Salle POP',
+            clickHandlerFunc: function() {
+                loadScene('salle-pop');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 16, // Vous pourriez vouloir ajuster cette valeur selon la hauteur de l'œuvre
+            yaw: 9, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-could',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/could.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+    ],
+    nextScene: 'atelier',
+    prevScene: 'couloir'
+},
+
+'salle-pop-png': {
+  title: "Salle POP",
+  description: "Espace d'exposition d'art contemporain.",
+  northOffset: 0,
+  yaw: 100,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/salle Pop.png',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 12,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-atelier2-retour',
+      tooltip: 'Retour vers l\'Atelier',
+      clickHandlerFunc: function() {
+        loadScene('atelier');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 68.5,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-droite-retour',
+      tooltip: 'Vers le Couloir Droite',
+      clickHandlerFunc: function() {
+        loadScene('couloir-droite-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 122,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-warhol-2-png',
+      tooltip: 'Vers l\'espace Warhol',
+      clickHandlerFunc: function() {
+        loadScene('warhol-2-new');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 5,
+      yaw: 25,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-pop2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/pop2.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 17,
+      yaw: 278,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-pop3',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/pop3.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 10,
+      yaw: 100,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-corda',
+      tooltip: 'Lancer la vidéo',
+      clickHandlerFunc: function() {
+  afficherVideo('https://player.vimeo.com/video/1077402918?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'warhol-2-new',
+  prevScene: 'atelier'
+},
+'salle-pop': {
+    title: "Salle POP",
+    description: "Espace d'exposition d'art pop.",
+    northOffset: 0,
+    yaw: 220, // Yaw spécifié à 70
+    pitch: 0,
+    hfov: 160,
+    panorama: 'pano/Salle POP 2 .jpg',
+    hotSpots: [
+        // Hotspot pour retourner au couloir droite (et non à l'atelier)
+        {
+            pitch: 0,
+            yaw: 10, // Position opposée pour retourner
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-couloir-droite-retour',
+            tooltip: 'Retour vers le Couloir Droite',
+            clickHandlerFunc: function() {
+                loadScene('couloir-droite');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 0,
+            yaw: 250, // Position à ajuster selon l'orientation souhaitée
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-atelier2',
+            tooltip: 'Vers l\'Atelier - Vue intérieure',
+            clickHandlerFunc: function() {
+                loadScene('atelier2');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 0,
+            yaw: 137, // Position à ajuster selon l'orientation souhaitée
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-warhol-2',
+            tooltip: 'Vers l\'espace Warhol',
+            clickHandlerFunc: function() {
+                loadScene('warhol-2-new');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 5, // Vous pourriez vouloir ajuster cette valeur selon la hauteur de l'œuvre
+            yaw: 258, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-pop2',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/pop2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 5, // Vous pourriez vouloir ajuster cette valeur selon la hauteur de l'œuvre
+            yaw: 210, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-pop3',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/pop3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 10, // Légèrement au-dessus du niveau des yeux
+            yaw: 120, // Position à ajuster
+            type: 'custom',
+            cssClass: 'hotspot-play',
+            id: 'hotspot-video-corda',
+            tooltip: 'Lancer la vidéo',
+            clickHandlerFunc: function() {
+  afficherVideo('https://player.vimeo.com/video/1077402918?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'cliquez pour voir la vidéo';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: -40, // Vous pourriez vouloir ajuster cette valeur selon la hauteur de l'œuvre
+            yaw: 115, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-pop2',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/pop1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+    ],
+    nextScene: null, 
+    prevScene: 'couloir-droite' // Mise à jour pour refléter que l'on revient au couloir droite
+},
+'warhol-2-new': {
+  title: "Espace Warhol",
+  description: "Exposition dédiée aux œuvres de Warhol.",
+  northOffset: 0,
+  yaw: 180,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/Warhol 2.jpg',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 355,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-pop-retour',
+      tooltip: 'Retour vers la Salle POP',
+      clickHandlerFunc: function() {
+        loadScene('salle-pop-png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 181,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-cristobal',
+      tooltip: 'Vers la Salle Cristobal',
+      clickHandlerFunc: function() {
+        loadScene('salle-cristobal');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 127,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-interieur',
+      tooltip: 'Vers le Couloir Intérieur',
+      clickHandlerFunc: function() {
+        loadScene('couloir-interieur-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -0.5,
+      yaw: 136,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-warhol2-new-1',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/grandp.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 2,
+      yaw: 200,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-warhol2-new-2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/petitp.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 2,
+      yaw: 102,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-warhol2-new',
+      tooltip: 'Lancer la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077695680?h=c770973787&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -13,
+      yaw: 95,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-warhol3-new',
+      tooltip: 'Lancer la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077693107?h=8171bd5a58&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'salle-cristobal',
+  prevScene: 'salle-pop-png'
+},
+
+'salle-cristobal': {
+  title: "Salle Cristobal",
+  description: "Salle d'exposition Cristobal avec présentation de produits spécifiques.",
+  northOffset: 0,
+  yaw: -70,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/Salle Cristobal2.jpg',
+  hotSpots: [
+    {
+      pitch: -2,
+      yaw: -265,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-gauche-retour',
+      tooltip: 'Retour vers le Couloir Gauche',
+      clickHandlerFunc: function() {
+        loadScene('couloir-gauche-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: -120,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-epopee-polyfluoralkyles',
+      tooltip: 'Vers L\'épopée des polyfluoralkyles',
+      clickHandlerFunc: function() {
+        loadScene('epopee-polyfluoralkyles');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+            pitch: 6, 
+            yaw: -88,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-cris1',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/cris1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 6, 
+            yaw: 328.5,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-cris2',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/cris2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 12, 
+            yaw: 5,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-cris3',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/cris3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 6, 
+            yaw: 50,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-cris4',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/cris4.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+    {
+      pitch: 1,
+      yaw: 303,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-info-icônes',
+      tooltip: 'Information',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Texte Icônes (Pop ou pas).png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Texte Icônes';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+    pitch: 0,
+    yaw: 318,
+    type: 'custom',
+    cssClass: 'hotspot-fleche',
+    id: 'hotspot-vers-warhol1',
+    tooltip: 'Vers Warhol',
+    clickHandlerFunc: function() {
+        loadScene('warhol-2'); // Modifié pour charger la scène au lieu d'afficher une image
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+}
+            ],
+            nextScene: 'couloir-gauche',
+            prevScene: 'appart'
+        },
+      'warhol-2': {
+    title: "Warhol",
+    description: "Espace d'exposition des œuvres de Warhol.",
+    northOffset: 0,
+    yaw: 140,
+    pitch: 0,
+    hfov: 160,
+    panorama: 'pano/Warhol 1.png', // Modifié pour utiliser Warhol 3.jpg
+    hotSpots: [
+        // Hotspot de retour vers le couloir
+        {
+            pitch: 0,
+            yaw: 282, // Position opposée pour retourner
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-retour-salle-cristobal',
+            tooltip: 'Retour au Couloir',
+            clickHandlerFunc: function() {
+                loadScene('salle-cristobal');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Retour';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 0,
+            yaw: 170, // Position à ajuster selon la disposition logique
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-couloir-interieur',
+            tooltip: 'Vers le Couloir Intérieur',
+            clickHandlerFunc: function() {
+                loadScene('couloir-interieur-retour');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 0,
+            yaw: 85, // Position à ajuster selon la disposition logique
+            type: 'custom',
+            cssClass: 'hotspot-fleche',
+            id: 'hotspot-vers-salle-pop',
+            tooltip: 'Vers la Salle POP',
+            clickHandlerFunc: function() {
+                loadScene('salle-pop-png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Avancez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: -1, // Légèrement au-dessus du niveau des yeux
+            yaw: 187, // Position à ajuster selon l'emplacement souhaité
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-warhol2-1',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/grandp.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 1, // Légèrement au-dessus du niveau des yeux
+            yaw: 58, // Position à ajuster selon l'emplacement souhaité
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-warhol2-2',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/petitp.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 2, // Légèrement au-dessus du niveau des yeux
+            yaw: 142, // Position à ajuster
+            type: 'custom',
+            cssClass: 'hotspot-play',
+            id: 'hotspot-video-warhol2',
+            tooltip: 'Lancer la vidéo',
+            clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077695680?h=c770973787&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'cliquez pour voir la vidéo';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: -11, // Légèrement au-dessus du niveau des yeux
+            yaw: 137, // Position à ajuster
+            type: 'custom',
+            cssClass: 'hotspot-play',
+            id: 'hotspot-video-warhol3',
+            tooltip: 'Lancer la vidéo',
+            clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077693107?h=8171bd5a58&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'cliquez pour voir la vidéo';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        }
+            ],
+            nextScene: null,
+            prevScene: 'couloir-gauche'
+        },
+
+'epopee-polyfluoralkyles': {
+  title: "L'épopée des polyfluoralkyles",
+  description: "Exposition sur les polyfluoralkyles.",
+  northOffset: 0,
+  yaw: 100,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/L\'épopée des polyfluoralkyles.jpg',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 117,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-cristobal-retour',
+      tooltip: 'Retour vers la Salle Cristobal',
+      clickHandlerFunc: function() {
+        loadScene('salle-cristobal');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: null,
+  prevScene: 'salle-cristobal'
+},
+
+'couloir-gauche': {
+  title: "Couloir Gauche",
+  description: "Section gauche du couloir menant vers d'autres espaces.",
+  northOffset: 0,
+  yaw: 50,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/couloir gauche.png',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 0.5,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-popup-momo',
+      tooltip: 'Vers Pop Up Store MOMO',
+      clickHandlerFunc: function() {
+        loadScene('popup-momo');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: -270,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-cristobal',
+      tooltip: 'Vers Salle Cristobal',
+      clickHandlerFunc: function() {
+        loadScene('salle-cristobal');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 178,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-interieur',
+      tooltip: 'Vers Couloir Intérieur',
+      clickHandlerFunc: function() {
+        loadScene('couloir-interieur-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+    pitch: 7, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: 13.5, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir4',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul4.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 5, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: 6, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir5',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul5.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 10, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -55, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir6',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul6.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 1, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -31, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir7',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul7.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 1, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -13.5, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir8',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul8.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 10, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -167, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir10',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul10.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+}
+  ],
+  nextScene: 'popup-momo',
+  prevScene: 'couloir'
+},
+'popup-momo': {
+  title: "Pop Up Store MOMO",
+  description: "Espace temporaire dédié à la marque MOMO.",
+  northOffset: 0,
+  yaw: 40,
+  pitch: 0,
+  hfov: 100,
+  panorama: 'pano/Pop Up Store MOMO.png',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 240,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-gauche-retour',
+      tooltip: 'Retour vers le Couloir Gauche',
+      clickHandlerFunc: function() {
+        loadScene('couloir-gauche-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Retour';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 55,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-popup-momo-2',
+      tooltip: 'Avancer dans le Pop Up Store',
+      clickHandlerFunc: function() {
+        loadScene('popup-momo-2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1,
+      yaw: 250,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-momo1',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul8.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 12,
+      yaw: 208,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-momo2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul9.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 5,
+      yaw: 92.5,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-info-momo',
+      tooltip: 'Information',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Pop up the MOMO.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Texte Pop Up Store';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'popup-momo-2',
+  prevScene: 'couloir-gauche'
+},
+
+'popup-momo-2': {
+  title: "Pop Up Store MOMO - Vue intérieure",
+  description: "Vue approfondie de l'espace MOMO.",
+  northOffset: 0,
+  yaw: 0,
+  pitch: 0,
+  hfov: 100,
+  panorama: 'pano/Pop Up Store MOMO 2.png',
+  hotSpots: [
+    {
+      pitch: -2,
+      yaw: 334,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-popup-momo-retour',
+      tooltip: 'Retour vers l\'entrée du Pop Up Store',
+      clickHandlerFunc: function() {
+        loadScene('popup-momo-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -2,
+      yaw: 320,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-info-momo2',
+      tooltip: 'Information',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Pop up the MOMO.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Texte Pop Up Store';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: 'popup-momo-retour',
+  prevScene: 'popup-momo'
+},
+'popup-momo-retour': {
+  title: "Pop Up Store MOMO",
+  description: "Espace temporaire dédié à la marque MOMO (vue retour).",
+  northOffset: 180,
+  yaw: 245,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/Pop Up Store MOMO.png',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 240,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-gauche-retour',
+      tooltip: 'Vers le Couloir Gauche',
+      clickHandlerFunc: function() {
+        loadScene('couloir-gauche-retour', { autoRotate: 0 });
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 12,
+      yaw: 208,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-momo2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/coul9.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 5,
+      yaw: 92.5,
+      type: 'custom',
+      cssClass: 'hotspot-livre',
+      id: 'hotspot-info-momo',
+      tooltip: 'Information',
+      clickHandlerFunc: function() {
+        afficherTexte('Texte/Pop up the MOMO.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Texte Pop Up Store';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 55,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-popup-momo-2',
+      tooltip: 'Avancer dans le Pop Up Store',
+      clickHandlerFunc: function() {
+        loadScene('popup-momo-2');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+    ],
+    nextScene: 'couloir-gauche',
+    prevScene: 'popup-momo-2'
+},
+'couloir-gauche-retour': {
+    title: "Couloir Gauche",
+    description: "Section gauche du couloir (vue retour).",
+    northOffset: 90,
+    yaw: 135,
+    autoRotate: -2,
+    pitch: 0,
+    hfov: 200,
+    panorama: 'pano/couloir gauche.png',
+    hotSpots: [
+    {
+      pitch: 0,
+      yaw: 0.5,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-popup-momo',
+      tooltip: 'Vers Pop Up Store MOMO',
+      clickHandlerFunc: function() {
+        loadScene('popup-momo');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -10,
+      yaw: -270,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-cristobal',
+      tooltip: 'Vers Salle Cristobal',
+      clickHandlerFunc: function() {
+        loadScene('salle-cristobal');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 178,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-interieur',
+      tooltip: 'Vers Couloir Intérieur',
+      clickHandlerFunc: function() {
+        loadScene('couloir-interieur-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+    pitch: 7, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: 13.5, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir4',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul4.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 5, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: 6, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir5',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul5.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 10, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -55, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir6',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul6.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 1, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -31, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir7',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul7.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 1, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -13.5, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir8',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul8.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+},
+{
+    pitch: 10, // Vous pouvez ajuster cette valeur pour la hauteur
+    yaw: -167, // La position horizontale que vous avez spécifiée
+    type: 'custom',
+    cssClass: 'hotspot-photo',
+    id: 'hotspot-photo-couloir10',
+    tooltip: 'Voir l\'image',
+    clickHandlerFunc: function() {
+        afficherTexte('images/coul10.png');
+    },
+    createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+    }
+}
+    ],
+    nextScene: 'salle-cristobal',
+    prevScene: 'couloir'
+},
+'couloir-interieur-retour': {
+    title: "Couloir Intérieur",
+    description: "Couloir intérieur (vue retour).",
+    northOffset: 180,
+    yaw: 40,
+    pitch: -5,
+    hfov: 160,
+    panorama: 'pano/couloir interieur.jpg',
+    hotSpots: [
+    {
+      pitch: 0,
+      yaw: 115,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-appart-retour',
+      tooltip: 'Retour vers L\'Appart',
+      clickHandlerFunc: function() {
+        loadScene('appart');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 270,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-gauche',
+      tooltip: 'Vers le Couloir Gauche',
+      clickHandlerFunc: function() {
+        loadScene('couloir-gauche');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+            pitch: 7, // Vous pourriez vouloir ajuster cette valeur selon la hauteur de l'œuvre
+            yaw: 43, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-couloir1',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/coul1.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 5, // Position spécifiée
+            yaw: 280, // Position spécifiée
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-couloir2',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/coul2.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+        {
+            pitch: 1,
+            yaw: 277,
+            type: 'custom',
+            cssClass: 'hotspot-photo',
+            id: 'hotspot-photo-couloir3',
+            tooltip: 'Voir l\'image',
+            clickHandlerFunc: function() {
+                afficherTexte('images/coul3.png');
+            },
+            createTooltipFunc: function(hotSpotDiv) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('hotspot-text');
+                textDiv.textContent = 'Cliquez';
+                hotSpotDiv.appendChild(textDiv);
+            }
+        },
+    {
+      pitch: 0,
+      yaw: -15,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-warhol',
+      tooltip: 'Vers Warhol',
+      clickHandlerFunc: function() {
+        loadScene('warhol-1');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 82,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-couloir-droite',
+      tooltip: 'Vers le Couloir Droite',
+      clickHandlerFunc: function() {
+        loadScene('couloir-droite');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    // [...] autre hotspot photo
+    ],
+    nextScene: 'couloir-gauche',
+    prevScene: 'appart'
+},
+'warhol-1': {
+  title: "Warhol",
+  description: "Espace d'exposition des œuvres de Warhol.",
+  northOffset: 0,
+  yaw: 60,
+  pitch: 0,
+  hfov: 160,
+  panorama: 'pano/Warhol 3.jpg',
+  hotSpots: [
+    {
+      pitch: 0,
+      yaw: 175,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-couloir-interieur-retour',
+      tooltip: 'Retour au Couloir',
+      clickHandlerFunc: function() {
+        loadScene('couloir-interieur-retour');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 68,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-pop-png',
+      tooltip: 'Vers la Salle POP',
+      clickHandlerFunc: function() {
+        loadScene('salle-pop-png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 345,
+      type: 'custom',
+      cssClass: 'hotspot-fleche',
+      id: 'hotspot-vers-salle-cristobal',
+      tooltip: 'Vers la Salle Cristobal',
+      clickHandlerFunc: function() {
+        loadScene('salle-cristobal');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Avancez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 0,
+      yaw: 220,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-warhol1',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/grandp.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 1,
+      yaw: 28,
+      type: 'custom',
+      cssClass: 'hotspot-photo',
+      id: 'hotspot-photo-warhol2',
+      tooltip: 'Voir l\'image',
+      clickHandlerFunc: function() {
+        afficherTexte('images/petitp.png');
+      },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'Cliquez';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: 4,
+      yaw: 126,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-warhol',
+      tooltip: 'Lancer la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077695680?h=c770973787&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    },
+    {
+      pitch: -16,
+      yaw: 118,
+      type: 'custom',
+      cssClass: 'hotspot-play',
+      id: 'hotspot-video-warhol',
+      tooltip: 'Lancer la vidéo',
+      clickHandlerFunc: function() {
+    afficherVideo('https://player.vimeo.com/video/1077693107?h=8171bd5a58&badge=0&autopause=0&player_id=0&app_id=58479');
+  },
+      createTooltipFunc: function(hotSpotDiv) {
+        const textDiv = document.createElement('div');
+        textDiv.classList.add('hotspot-text');
+        textDiv.textContent = 'cliquez pour voir la vidéo';
+        hotSpotDiv.appendChild(textDiv);
+      }
+    }
+  ],
+  nextScene: null,
+  prevScene: 'couloir'
+}
+// Fin de la définition des scènes
+};
+
+// Variables globales
+// Variable globale pour le viewer
+let viewer;
+let currentScene = 'entree'; // Scène de départ - modifié pour commencer par l'entrée
+let currentSection = 'entree'; // Section courante, initialisée à 'entree'
+
+// Fonction pour encoder les URL avec caractères spéciaux
+function encodePath(path) {
+  // Séparons le chemin en segments
+  const parts = path.split('/');
+  // Encodons chaque segment
+  const encodedParts = parts.map(part => encodeURIComponent(part));
+  // Reconstruisons le chemin
+  return encodedParts.join('/');
+}
+
+// Fonction améliorée pour charger une scène
+function loadScene(sceneId, options) {
+  // Afficher un indicateur de chargement
+  const panoramaDiv = document.getElementById('panorama');
+  const loadingIndicator = document.createElement('div');
+  loadingIndicator.id = 'loading-indicator';
+  loadingIndicator.innerHTML = '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.7);padding:15px;border-radius:8px;z-index:999;"><i class="fas fa-spinner fa-spin" style="font-size:24px;color:white;margin-right:10px;"></i> Chargement en cours...</div>';
+  panoramaDiv.appendChild(loadingIndicator);
+  
+  if (viewer) {
+    viewer.destroy();
+  }
+  
+  currentScene = sceneId;
+  
+  // Déterminer la section en fonction de l'ID de la scène
+  if (['entree', 'entree2', 'entree3', 'etage'].includes(sceneId)) {
+    currentSection = 'entree';
+  } else if (['appart', 'atelier', 'atelier2', 'couloir-droite-retour', 'salle-pop-png','salle-pop', 'warhol-1','warhol-2', 'warhol-2-new', 'salle-cristobal','epopee-polyfluoralkyles', 
+             'popup-momo', 'couloir', 'couloir-droite', 'couloir-gauche', 'couloir-interieur-retour',
+             'popup-momo-2', 'popup-momo-retour', 'couloir-gauche-retour'].includes(sceneId)) {
+    currentSection = 'appart';
+  } else {
+    currentSection = 'souplex';
+  }
+  
+  console.log("Section courante:", currentSection);
+  
+  // Mettre à jour le panneau d'info
+  showInfoPanel(currentSection);
+  
+  // Configuration du viewer Pannellum
+  const viewerConfig = {
+    default: {
+      firstScene: sceneId,
+      sceneFadeDuration: 1000,
+      autoLoad: true,
+      compass: false,
+      orientationOnByDefault: true,
+      showFullscreenCtrl: true,
+      showControls: true,
+      touchPanSpeedCoeffFactor: 1.5,
+      autoRotate: -2,
+      showTitle: true
+    },
+    scenes: scenes
+  };
+  
+  // Appliquer des options supplémentaires si fournies
+  if (options) {
+    Object.assign(viewerConfig.default, options);
+  }
+  
+  viewer = pannellum.viewer('panorama', viewerConfig);
+
+  // Mettre à jour la scène active dans le panneau approprié
+  // Sélectionnez tous les éléments du menu
+  let allSceneItems = document.querySelectorAll('.scene-item');
+  
+  // Retirer la classe active de tous les éléments
+  allSceneItems.forEach(item => {
+    item.classList.remove('active');
+  });
+  
+  // Parcourir les éléments pour trouver celui qui correspond à la scène actuelle
+  allSceneItems.forEach(item => {
+    // Si l'élément fait référence à la scène en cours, on lui ajoute la classe active
+    if (item.getAttribute('onclick') && 
+        item.getAttribute('onclick').includes(`loadScene('${sceneId}')`)) {
+      item.classList.add('active');
+    }
+    // Aussi, vérifier par le titre si les onclick ne correspondent pas
+    const titleElement = item.querySelector('.scene-item-title');
+    if (titleElement && scenes[sceneId] && titleElement.textContent === scenes[sceneId].title) {
+      item.classList.add('active');
+    }
+  });
+  
+  // Déplacer le titre dans le coin supérieur droit après l'initialisation
+  setTimeout(function() {
+    const titleBox = document.querySelector('.pnlm-title-box');
+    if (titleBox) {
+      titleBox.style.position = 'absolute';
+      titleBox.style.top = '10px';
+      titleBox.style.right = '10px';
+      titleBox.style.left = 'auto';
+      titleBox.style.bottom = 'auto';
+      titleBox.style.textAlign = 'right';
+      titleBox.style.width = 'auto';
+      titleBox.style.maxWidth = '300px';
+      titleBox.style.transform = 'none';
+    }
+  }, 500);
+  
+  // Supprimer l'indicateur lorsque la scène est chargée
+  viewer.on('load', function() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    if (loadingIndicator) {
+      loadingIndicator.remove();
+    }
+  });
+  
+  console.log("Scène chargée: " + sceneId);
+}
+// Fonction pour mettre à jour l'élément actif dans le panneau de navigation
+function updateActiveSceneItem(sceneId) {
+  // Mettre à jour la scène active dans le panneau d'info
+  document.querySelectorAll('.scene-item').forEach(item => {
+    item.classList.remove('active');
+  });
+  
+  const sceneItems = document.querySelectorAll('.scene-item');
+  for (let i = 0; i < sceneItems.length; i++) {
+    if (sceneItems[i].querySelector('.scene-item-title').textContent === scenes[sceneId].title) {
+      sceneItems[i].classList.add('active');
+      break;
+    }
+    // Alternative : vérifier le titre si les onclick ne correspondent pas exactement
+    const titleElement = sceneItems[i].querySelector('.scene-item-title');
+    if (titleElement && scenes[sceneId] && titleElement.textContent === scenes[sceneId].title) {
+      sceneItems[i].classList.add('active');
+      break;
+    }
+  }
+}
+
+// Fonction améliorée pour afficher le panneau d'information approprié
+function showInfoPanel(section) {
+  console.log("Affichage du panneau pour section:", section);
+  
+  // Masquer tous les panneaux d'information
+  document.querySelectorAll('.info-panel').forEach(panel => {
+    panel.classList.remove('active');
+  });
+  
+  // Déterminer le panneau à afficher selon la section
+  let panelId;
+  if (section === 'appart') {
+    panelId = 'infoPanelAppart';
+  } else if (section === 'entree') {
+    panelId = 'infoPanelEntree';
+  } else { // souplex
+    panelId = 'infoPanelSouplex';
+  }
+  
+  // Afficher le panneau approprié
+  const panel = document.getElementById(panelId);
+  if (panel) {
+    panel.classList.add('active');
+    console.log('Panneau affiché:', panelId);
+  } else {
+    console.error('Panneau non trouvé:', panelId);
+    // Lister tous les panneaux disponibles pour le débogage
+    console.log("Panneaux disponibles:", 
+      Array.from(document.querySelectorAll('.info-panel')).map(p => p.id).join(', '));
+  }
+}
+
+// Fonctions pour les modales
+function afficherTexte(imageSrc) {
+  const texteImage = document.getElementById('texteImage');
+  texteImage.src = imageSrc;
+  const modal = document.getElementById('texteModal');
+  const modalContent = modal.querySelector('.modal-content');
+  
+  // S'assurer que la modal-content a position relative
+  modalContent.style.position = 'relative';
+  
+  // Retirer tout bouton de fermeture existant
+  const oldCloseBtn = modalContent.querySelector('.texte-close');
+  if (oldCloseBtn) {
+    oldCloseBtn.remove();
+  }
+  
+  // Créer un nouveau bouton de fermeture directement sur l'image
+  const closeBtn = document.createElement('span');
+  closeBtn.className = 'texte-close';
+  closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+  closeBtn.style.position = 'absolute';
+  closeBtn.style.top = '10px';
+  closeBtn.style.right = '10px';
+  closeBtn.style.zIndex = '1002';
+  closeBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+  closeBtn.style.width = '30px';
+  closeBtn.style.height = '30px';
+  closeBtn.style.borderRadius = '50%';
+  closeBtn.style.display = 'flex';
+  closeBtn.style.alignItems = 'center';
+  closeBtn.style.justifyContent = 'center';
+  closeBtn.style.cursor = 'pointer';
+  closeBtn.style.color = 'white';
+  
+  // Ajouter l'événement au bouton
+  closeBtn.addEventListener('click', fermerTexte);
+  
+  // Ajouter le bouton à la modal-content (après que l'image soit chargée)
+  texteImage.onload = function() {
+    modalContent.appendChild(closeBtn);
+  };
+  
+  modal.style.display = 'block';
+  setTimeout(() => {
+    modal.classList.add('active');
+  }, 10);
+}
+
+function afficherVideo(videoSrc) {
+  const videoModal = document.getElementById('videoModal');
+  const videoContent = document.querySelector('.video-modal-content');
+  
+  // Vider le contenu existant
+  videoContent.innerHTML = '';
+  
+  // Ajuster le style de la modal elle-même
+  videoModal.style.display = 'flex';
+  videoModal.style.justifyContent = 'center';
+  videoModal.style.alignItems = 'center';
+  
+  // Réinitialiser le style du conteneur vidéo pour un centrage parfait
+  videoContent.style.position = 'relative';
+  videoContent.style.top = 'auto';
+  videoContent.style.left = 'auto';
+  videoContent.style.transform = 'none';
+  videoContent.style.width = '80%';
+  videoContent.style.maxWidth = '800px';
+  videoContent.style.height = 'auto';
+  videoContent.style.backgroundColor = 'transparent';
+  
+  // Créer un conteneur avec ratio 16:9
+  const aspectRatio = document.createElement('div');
+  aspectRatio.style.position = 'relative';
+  aspectRatio.style.width = '100%';
+  aspectRatio.style.paddingTop = '56.25%'; // Ratio 16:9
+  aspectRatio.style.backgroundColor = '#000';
+  aspectRatio.style.overflow = 'hidden';
+  aspectRatio.style.borderRadius = '8px';
+  
+  // Créer l'iframe
+  const iframe = document.createElement('iframe');
+  
+  // Ajuster l'URL de la vidéo pour inclure autoplay
+  if (!videoSrc.includes('autoplay=1')) {
+    videoSrc = videoSrc.includes('?') ? 
+      videoSrc + '&autoplay=1&title=0&byline=0&portrait=0' : 
+      videoSrc + '?autoplay=1&title=0&byline=0&portrait=0';
+  }
+  
+  iframe.src = videoSrc;
+  iframe.style.position = 'absolute';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.allowFullscreen = true;
+  iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+  
+  // Ajouter l'iframe au ratio
+  aspectRatio.appendChild(iframe);
+  
+  // Ajouter le ratio au conteneur
+  videoContent.appendChild(aspectRatio);
+  
+  // Ajouter un bouton de fermeture
+  const closeButton = document.createElement('button');
+  closeButton.className = 'video-close';
+  closeButton.innerHTML = '<i class="fas fa-times"></i>';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '10px';
+  closeButton.style.right = '10px';
+  closeButton.style.zIndex = '1002';
+  closeButton.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+  closeButton.style.color = 'white';
+  closeButton.style.border = 'none';
+  closeButton.style.width = '40px';
+  closeButton.style.height = '40px';
+  closeButton.style.borderRadius = '50%';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.display = 'flex';
+  closeButton.style.alignItems = 'center';
+  closeButton.style.justifyContent = 'center';
+  closeButton.style.fontSize = '18px';
+  
+  // Ajouter l'événement au bouton
+  closeButton.addEventListener('click', fermerVideo);
+  
+  // Ajouter le bouton au conteneur vidéo
+  videoContent.appendChild(closeButton);
+  
+  // Activer la modal avec effet de transition
+  setTimeout(() => {
+    videoModal.classList.add('active');
+  }, 10);
+}
+
+function fermerVideo() {
+  const modal = document.getElementById('videoModal');
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+    // Vider le contenu pour arrêter la lecture
+    document.querySelector('.video-modal-content').innerHTML = '';
+  }, 300);
+}
+// Navigation entre les scènes
+function goToNextScene() {
+  const nextSceneId = scenes[currentScene].nextScene;
+  if (nextSceneId) {
+    loadScene(nextSceneId);
+  }
+}
+
+function goToPrevScene() {
+  const prevSceneId = scenes[currentScene].prevScene;
+  if (prevSceneId) {
+    loadScene(prevSceneId);
+  }
+}
+
+// Fonction pour sortir de la visite virtuelle
+function exitVirtualTour() {
+  // Détruire le viewer s'il existe
+  if (viewer) {
+    viewer.destroy();
+    viewer = null;
+  }
+  
+  // Retirer la classe mode-360
+  document.body.classList.remove('mode-360');
+  
+  // Cacher les éléments de la visite 360°
+  document.querySelector('.panorama-container').style.display = 'none';
+  document.getElementById('vrButton').style.display = 'none';
+  document.getElementById('homeButton').style.display = 'none';
+  
+  // Réinitialiser l'arrière-plan
+  document.body.style.backgroundImage = "url('pano/Démarrez.jpg')";
+  
+  // Rendre visibles les éléments de la page d'accueil
+  document.querySelector('.content-container').style.display = 'block';
+  document.querySelector('.logo').style.display = 'block';
+  document.body.style.transform = 'rotate(-0.65deg)';
+}
+
+// Fonction pour démarrer la visite virtuelle
+function startVirtualTour() {
+  console.log("Démarrage de la visite virtuelle");
+  
+  // Basculer vers le mode visite 360°
+  document.body.classList.add('mode-360');
+  
+  // Rendre visibles les éléments de la visite 360°
+  document.querySelector('.panorama-container').style.display = 'block';
+  document.getElementById('vrButton').style.display = 'block';
+  document.getElementById('homeButton').style.display = 'block';
+  
+  // Initialisation du premier panorama - démarrer par l'entrée
+  loadScene('entree');
+}
+
+// Script de la page d'accueil - s'exécute quand la page est chargée
+document.addEventListener('DOMContentLoaded', function() {
+  // Forcer le rechargement de l'image d'arrière-plan
+  document.body.style.backgroundImage = "none";
+  setTimeout(function() {
+    document.body.style.backgroundImage = "url('pano/Démarrez.jpg')";
+  }, 100);
+  
+  // S'assurer que le logo est visible
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    logo.style.display = "block";
+  }
+  
+  // Ajouter un écouteur d'événement au bouton "Commencer la visite"
+  document.getElementById('startButton').addEventListener('click', function() {
+    startVirtualTour();
+  });
+  
+  // Initialiser les boutons de fermeture pour tous les panneaux
+  document.querySelectorAll('.close-info').forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
+      document.querySelectorAll('.info-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+    });
+  });
+  
+  // Initialiser le bouton d'information
+  const infoButton = document.getElementById('infoButton');
+  if (infoButton) {
+    infoButton.addEventListener('click', function() {
+      showInfoPanel(currentSection);
+    });
+  }
+  
+  // Ajouter un écouteur d'événement au bouton de retour à l'accueil
+  document.getElementById('homeButton').addEventListener('click', function() {
+    loadScene('entree'); // 'entree' est le premier panorama
+  });
+  
+  // Boutons de navigation
+  document.getElementById('nextButton').addEventListener('click', goToNextScene);
+  document.getElementById('prevButton').addEventListener('click', goToPrevScene);
+  
+  // Fermer les modales
+  window.addEventListener('click', function(event) {
+  if (event.target === document.getElementById('texteModal')) {
+    fermerTexte();
+  }
+  if (event.target === document.getElementById('videoModal')) {
+    fermerVideo();
+  }
+});
+  
+  // Fermer les modales en cliquant à l'extérieur
+  window.addEventListener('click', function(event) {
+    if (event.target === document.getElementById('texteModal')) {
+      fermerTexte();
+    }
+    if (event.target === document.getElementById('videoModal')) {
+      fermerVideo();
+    }
+  });
+  
+  // Gestion du bouton VR
+  document.getElementById('vrButton').addEventListener('click', function() {
+    // Demande le mode plein écran
+    const element = document.documentElement;
+    if (element.requestFullscreen) {
+      element.requestFullscreen();
+    } else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }
+    
+    // Active le mode VR (orientation du téléphone)
+    if (viewer) {
+      // Force l'activation du gyroscope si disponible
+      viewer.setVfovBounds([30, 90]);
+      
+      // Activer le mode gyroscope manuellement si disponible
+      if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // Pour iOS 13+
+        DeviceOrientationEvent.requestPermission()
+          .then(function(response) {
+            if (response == 'granted') {
+              console.log('Permission accordée pour l\'orientation de l\'appareil');
+            }
+          })
+          .catch(console.error);
+      }
+    }
+  });
+  
+  // Observer les changements du DOM pour s'assurer que le titre reste dans le coin
+  const observer = new MutationObserver(function(mutations) {
+    const titleBox = document.querySelector('.pnlm-title-box');
+    if (titleBox) {
+      titleBox.style.position = 'absolute';
+      titleBox.style.top = '10px';
+      titleBox.style.right = '10px';
+      titleBox.style.left = 'auto';
+      titleBox.style.textAlign = 'right';
+    }
+  });
+  
+  // Commencer à observer le corps du document avec la configuration ci-dessus
+  observer.observe(document.body, { 
+    childList: true, 
+    subtree: true 
+  });
+});
+</script>
+</body>
+</html>
