@@ -299,52 +299,96 @@ body::before {
     text-shadow: 1px 1px 2px black;
   }   
   /* Styles des modales */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    opacity: 0;
-    transition: opacity var(--transition-speed) ease-in-out;
-  }
-  
-  .modal.active {
-    opacity: 1;
-  }
-  
+  /* Styles des modales - Version corrigée */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease-in-out;
+}
+
+.modal.active {
+  opacity: 1;
+}
+
+/* Styles améliorés pour la modale d'image/texte */
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 90%;  /* Utiliser une largeur relative */
+  max-width: 90vh; /* Limite pour très grands écrans */
+  background-color: transparent;
+  border-radius: 10px;
+  padding: 0;
+  box-sizing: border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: all var(--transition-speed) ease-in-out;
+  overflow: hidden;
+}
+
+.modal.active .modal-content {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.modal-content img {
+  width: 100%; /* L'image prend toute la largeur du conteneur */
+  height: auto;
+  display: block;
+  border-radius: 10px;
+  object-fit: contain;
+  max-height: 90vh; /* Hauteur maximale pour s'adapter à l'écran */
+}
+
+/* Styles pour le bouton de fermeture */
+.texte-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.7); /* Fond blanc semi-transparent */
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  z-index: 1010;
+  transition: all 0.3s ease;
+}
+
+.texte-close:hover {
+  background-color: #ff0000;
+  color: white;
+  transform: rotate(90deg);
+}
+
+/* Styles spécifiques pour mobiles */
+@media (max-width: 768px) {
   .modal-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    width: 500px;
-    max-width: 90%;
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 0;
-    box-sizing: border-box;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: all var(--transition-speed) ease-in-out;
-    overflow: hidden;
+    width: 95%;
+    max-width: none;
   }
   
-  .modal.active .modal-content {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+  .texte-close {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+    top: 20px;
+    right: 20px;
   }
-  
-  .modal-content img {
-    width: 100%;
-    height: auto;
-    display: block;
-    border-radius: 10px;
-    margin: 0;
-  }
+}
   
   .video-modal-content {
   position: absolute;
@@ -413,22 +457,22 @@ body::before {
   }
   
   .texte-close {
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    color: black;
-    font-size: 24px;
-    cursor: pointer;
-    z-index: 1002;
-    background-color: rgba(0, 0, 0, 0.1);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--transition-speed) ease-in-out;
-  }
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: black;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1002;
+  background-color: rgba(255, 255, 255, 0.8);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed) ease-in-out;
+}
   
   .texte-close:hover {
     background-color: var(--accent-color);
@@ -948,8 +992,10 @@ body::before {
 <!-- Modales pour contenu supplémentaire -->
 <div id="texteModal" class="modal">
   <div class="modal-content">
+    <span class="texte-close">
+      <i class="fas fa-times"></i>
+    </span>
     <img id="texteImage" src="" alt="Texte explicatif">
-    <!-- Le bouton de fermeture sera ajouté dynamiquement -->
   </div>
 </div>
 
@@ -4906,47 +4952,42 @@ function showInfoPanel(section) {
 }
 
 // Fonctions pour les modales
-function afficherTexte(imageSrc) {
-  const texteImage = document.getElementById('texteImage');
-  texteImage.src = imageSrc;
+// Ajoutez ces fonctions qui manquent dans votre code
+
+// Fonction pour fermer la fenêtre de texte/image
+// Fonction pour fermer la fenêtre de texte/image
+function fermerTexte() {
   const modal = document.getElementById('texteModal');
-  const modalContent = modal.querySelector('.modal-content');
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 300);
+}
+
+// S'assurer que l'événement est correctement attaché lors du chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+  // Trouver TOUS les boutons de fermeture des modales texte
+  const textCloseButtons = document.querySelectorAll('.texte-close');
+  textCloseButtons.forEach(btn => {
+    // Supprimer les anciens gestionnaires d'événements s'il y en a
+    btn.removeEventListener('click', fermerTexte);
+    // Ajouter le nouveau gestionnaire
+    btn.addEventListener('click', fermerTexte);
+    console.log('Event listener added to text close button');
+  });
   
-  // S'assurer que la modal-content a position relative
-  modalContent.style.position = 'relative';
-  
-  // Retirer tout bouton de fermeture existant
-  const oldCloseBtn = modalContent.querySelector('.texte-close');
-  if (oldCloseBtn) {
-    oldCloseBtn.remove();
-  }
-  
-  // Créer un nouveau bouton de fermeture directement sur l'image
-  const closeBtn = document.createElement('span');
-  closeBtn.className = 'texte-close';
-  closeBtn.innerHTML = '<i class="fas fa-times"></i>';
-  closeBtn.style.position = 'absolute';
-  closeBtn.style.top = '10px';
-  closeBtn.style.right = '10px';
-  closeBtn.style.zIndex = '1002';
-  closeBtn.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
-  closeBtn.style.width = '30px';
-  closeBtn.style.height = '30px';
-  closeBtn.style.borderRadius = '50%';
-  closeBtn.style.display = 'flex';
-  closeBtn.style.alignItems = 'center';
-  closeBtn.style.justifyContent = 'center';
-  closeBtn.style.cursor = 'pointer';
-  closeBtn.style.color = 'white';
-  
-  // Ajouter l'événement au bouton
-  closeBtn.addEventListener('click', fermerTexte);
-  
-  // Ajouter le bouton à la modal-content (après que l'image soit chargée)
-  texteImage.onload = function() {
-    modalContent.appendChild(closeBtn);
-  };
-  
+  // Fermer également en cliquant à l'extérieur
+  document.getElementById('texteModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      fermerTexte();
+    }
+  });
+});
+
+// Modification de la fonction d'affichage pour garantir que le bouton de fermeture est fonctionnel
+function afficherTexte(imageSrc) {
+  document.getElementById('texteImage').src = imageSrc;
+  const modal = document.getElementById('texteModal');
   modal.style.display = 'block';
   setTimeout(() => {
     modal.classList.add('active');
